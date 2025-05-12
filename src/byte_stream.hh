@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <string>
 #include <string_view>
+#include <deque>
 
 class Reader;
 class Writer;
@@ -23,7 +24,13 @@ public:
 
 protected:
   // Please add any additional state to the ByteStream here, and not to the Writer and Reader interfaces.
-  uint64_t capacity_;
+  uint64_t capacity_{};
+  bool closesign{};
+  uint64_t popped_count{};
+  uint64_t pushed_count{};
+  uint64_t buffered_count{};
+  uint64_t cutdown_count{};
+  std::deque<std::string> buffer_{};
   bool error_ {};
 };
 
@@ -50,7 +57,7 @@ public:
 };
 
 /*
- * read: A (provided) helper function thats peeks and pops up to `max_len` bytes
+ * read: A (provided) helper function thats peeks and pops up to `len` bytes
  * from a ByteStream Reader into a string;
  */
-void read( Reader& reader, uint64_t max_len, std::string& out );
+void read( Reader& reader, uint64_t len, std::string& out );
